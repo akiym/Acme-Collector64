@@ -1,0 +1,113 @@
+package Acme::Collector64;
+use strict;
+use warnings;
+our $VERSION = '0.01';
+
+sub new {
+    my ($class, %args) = @_;
+
+    my $index_table = $args{index_table}
+        || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+    bless {
+        index_table => $index_table,
+    }, $class;
+}
+
+sub encode {
+    my ($self, $input) = @_;
+
+    my $output = '';
+    my ($chr1, $chr2, $chr3, $enc1, $enc2, $enc3, $enc4);
+    my $i = 0;
+    while ($i < length $input) {
+        for ($chr1, $chr2, $chr3) {
+            $_ = $i < length $input ? ord substr($input, $i++, 1) : 0;
+        }
+        $enc1 = $chr1 >> 2;
+        $enc2 = (($chr1 & 3) << 4) | ($chr2 >> 4);
+        $enc3 = (($chr2 & 15) << 2) | ($chr3 >> 6);
+        $enc4 = $chr3 & 63;
+        if (!$chr2) {
+            $enc3 = $enc4 = 64;
+        } elsif (!$chr3) {
+            $enc4 = 64;
+        }
+        for my $enc ($enc1, $enc2, $enc3, $enc4) {
+            $output .= substr $self->{index_table}, $enc, 1;
+        }
+    }
+    $output;
+}
+
+sub decode {
+    my ($self, $input) = @_;
+
+    my $output = '';
+    my ($enc1, $enc2, $enc3, $enc4, $chr1, $chr2, $chr3);
+    my $i = 0;
+    while ($i < length $input) {
+        for my $enc ($enc1, $enc2, $enc3, $enc4) {
+            $enc = index $self->{index_table}, substr($input, $i++, 1);
+        }
+        $chr1 = ($enc1 << 2) | ($enc2 >> 4);
+        $chr2 = (($enc2 & 15) << 4) | ($enc3 >> 2);
+        $chr3 = (($enc3 & 3) << 6) | $enc4;
+        $output .= chr $chr1;
+        if ($enc3 != 64) {
+            $output .= chr $chr2;
+        }
+        if ($enc4 != 64) {
+            $output .= chr $chr3;
+        }
+    }
+    $output;
+}
+
+1;
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+Acme::Collector64 - Yet Another Base64?
+
+=head1 SYNOPSIS
+
+    use utf8;
+    use Acme::Collector64;
+
+    my $japanese64 = Acme::Collector64->new(
+        index_table => 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもらりるれろがぎぐげござじずぜぞばびぶべぼぱぴぷぺぽやゆよわ=',
+    );
+
+    $japanese64->encode('Hello, world!');
+    $japanese64->decode('てきにごふきやごけくほずへれぞりけち==');
+
+=head1 DESCRIPTION
+
+Let's make your own Base64!
+
+=head1 METHODS
+
+=over 4
+
+=item my $c64 = Acme::Collector64->new(index_table => '')
+
+Create new instance of Acme::Collector64. And you can define the index_table.
+
+The index_table is a string of 65 characters.
+By default "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".
+
+=item $c64->encode($data)
+
+=item $c64->decode($string)
+
+=back
+
+=head1 THANKS TO
+
+jquery.base64.js
+
+=cut

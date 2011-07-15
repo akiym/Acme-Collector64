@@ -1,0 +1,16 @@
+Acme::Collector64 - Yet Another Base64?
+=======================================
+
+Let's make your own Base64!
+
+    use utf8;
+    use Acme::Collector64;
+
+    my $index_table = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもらりるれろがぎぐげござじずぜぞばびぶべぼぱぴぷぺぽやゆよわ=';
+
+    my $japanese64 = Acme::Collector64->new(
+        index_table => $index_table,
+    );
+
+    $japanese64->encode('Hello, world!');
+    $japanese64->decode('てきにごふきやごけくほずへれぞりけち==');
