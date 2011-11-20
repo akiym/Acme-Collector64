@@ -1,13 +1,19 @@
 package Acme::Collector64;
 use strict;
 use warnings;
+use Carp ();
+
 our $VERSION = '0.01';
 
 sub new {
     my ($class, %args) = @_;
 
     my $index_table = $args{index_table}
-        || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+        || join '', ('A'..'Z', 'a'..'z', 0..9, '+/=');
+
+    unless (length $index_table == 65) {
+        Carp::croak('index_table must be 65-character string.');
+    }
 
     bless {
         index_table => $index_table,
