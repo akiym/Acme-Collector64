@@ -101,19 +101,35 @@ Let's make your own Base64!
 
 =item my $c64 = Acme::Collector64->new(index_table => '')
 
-Create new instance of Acme::Collector64. And you can define the index_table.
+Create new instance of Acme::Collector64.
 
-The index_table is a string of 65 characters.
-By default "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".
+=over 4
 
-=item $c64->encode($data)
+=item index_table
 
-=item $c64->decode($string)
+This is user definable index table. You have to define 65-character string.
+
+index_table by default is "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".
 
 =back
 
-=head1 THANKS TO
+=item $c64->encode($data)
 
-jquery.base64.js
+This function takes B<binary string> to encode and return the encoded string.
+
+=item $c64->decode($string)
+
+This function takes B<text string> to decode and return the decoded data.
+
+=back
+
+=head1 AUTHOR
+
+Takumi Akiyama E<lt>t.akiym at gmail.comE<gt>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
