@@ -1,6 +1,7 @@
 package Acme::Collector64;
 use strict;
 use warnings;
+use 5.008001;
 use Carp ();
 
 our $VERSION = '0.01';
