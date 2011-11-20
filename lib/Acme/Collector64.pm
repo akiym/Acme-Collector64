@@ -10,7 +10,7 @@ sub new {
     my ($class, %args) = @_;
 
     my $index_table = $args{index_table}
-        || join '', ('A'..'Z', 'a'..'z', 0..9, '+/=');
+        || join '', ('A'..'Z', 'a'..'z', '0'..'9', '+/=');
 
     unless (length $index_table == 65) {
         Carp::croak('index_table must be 65-character string.');
