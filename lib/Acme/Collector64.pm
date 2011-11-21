@@ -7,7 +7,8 @@ use Carp ();
 our $VERSION = '0.01';
 
 sub new {
-    my ($class, %args) = @_;
+    my $class = shift;
+    my %args = @_ == 1 ? %{$_[0]} : @_;
 
     my $index_table = $args{index_table}
         || join '', ('A'..'Z', 'a'..'z', '0'..'9', '+/=');
@@ -100,7 +101,7 @@ Let's make your own Base64!
 
 =over 4
 
-=item my $c64 = Acme::Collector64->new(index_table => '')
+=item my $c64 = Acme::Collector64->new([\%args])
 
 Create new instance of Acme::Collector64.
 
