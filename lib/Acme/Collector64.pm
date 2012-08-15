@@ -17,7 +17,7 @@ sub new {
         Carp::croak('index_table must be 65-character string.');
     }
 
-    bless {
+    return bless {
         index_table => $index_table,
     }, $class;
 }
@@ -26,16 +26,16 @@ sub encode {
     my ($self, $input) = @_;
 
     my $output = '';
-    my ($chr1, $chr2, $chr3, $enc1, $enc2, $enc3, $enc4);
     my $i = 0;
     while ($i < length $input) {
-        for ($chr1, $chr2, $chr3) {
-            $_ = $i < length $input ? ord substr($input, $i++, 1) : 0;
+        my ($chr1, $chr2, $chr3);
+        for my $chr ($chr1, $chr2, $chr3) {
+            $chr = $i < length $input ? ord substr($input, $i++, 1) : 0;
         }
-        $enc1 = $chr1 >> 2;
-        $enc2 = (($chr1 & 3) << 4) | ($chr2 >> 4);
-        $enc3 = (($chr2 & 15) << 2) | ($chr3 >> 6);
-        $enc4 = $chr3 & 63;
+        my $enc1 = $chr1 >> 2;
+        my $enc2 = (($chr1 & 3) << 4) | ($chr2 >> 4);
+        my $enc3 = (($chr2 & 15) << 2) | ($chr3 >> 6);
+        my $enc4 = $chr3 & 63;
         if (!$chr2) {
             $enc3 = $enc4 = 64;
         } elsif (!$chr3) {
@@ -45,22 +45,22 @@ sub encode {
             $output .= substr $self->{index_table}, $enc, 1;
         }
     }
-    $output;
+    return $output;
 }
 
 sub decode {
     my ($self, $input) = @_;
 
     my $output = '';
-    my ($enc1, $enc2, $enc3, $enc4, $chr1, $chr2, $chr3);
     my $i = 0;
     while ($i < length $input) {
+        my ($enc1, $enc2, $enc3, $enc4);
         for my $enc ($enc1, $enc2, $enc3, $enc4) {
             $enc = index $self->{index_table}, substr($input, $i++, 1);
         }
-        $chr1 = ($enc1 << 2) | ($enc2 >> 4);
-        $chr2 = (($enc2 & 15) << 4) | ($enc3 >> 2);
-        $chr3 = (($enc3 & 3) << 6) | $enc4;
+        my $chr1 = ($enc1 << 2) | ($enc2 >> 4);
+        my $chr2 = (($enc2 & 15) << 4) | ($enc3 >> 2);
+        my $chr3 = (($enc3 & 3) << 6) | $enc4;
         $output .= chr $chr1;
         if ($enc3 != 64) {
             $output .= chr $chr2;
@@ -69,7 +69,7 @@ sub decode {
             $output .= chr $chr3;
         }
     }
-    $output;
+    return $output;
 }
 
 1;
