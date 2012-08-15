@@ -11,10 +11,10 @@ my $japanese64 = Acme::Collector64->new(
     index_table => $index_table,
 );
 
-is $japanese64->encode('XD'), 'ぬおち=';
-is $japanese64->encode(encode_utf8('こんにちは！こんにちは！')), 'ぴぴきとぴぴさとぴぴきげぴぴきめぴぴきずぽぽばいぴぴきとぴぴさとぴぴきげぴぴきめぴぴきずぽぽばい';
+cmp_ok $japanese64->encode('XD'), 'eq', 'ぬおち=';
+cmp_ok $japanese64->encode(encode_utf8('こんにちは！こんにちは！')), 'eq', 'ぴぴきとぴぴさとぴぴきげぴぴきめぴぴきずぽぽばいぴぴきとぴぴさとぴぴきげぴぴきめぴぴきずぽぽばい';
 
-is $japanese64->decode('ぴぴさこぴぴきたぴぴきむ'), encode_utf8('らくだ');
-is $japanese64->decode('ぴぴきのぴぴさかぴぴさうぴぴさとぴぴきすけそそいがまそいらそそいめそそいずじそいれち=='), encode_utf8('じゅもんが ちがいます');
+cmp_ok decode_utf8($japanese64->decode('ぴぴさこぴぴきたぴぴきむ')), 'eq', 'らくだ';
+cmp_ok decode_utf8($japanese64->decode('ぴぴきのぴぴさかぴぴさうぴぴさとぴぴきすけそそいがまそいらそそいめそそいずじそいれち==')), 'eq', 'じゅもんが ちがいます';
 
 done_testing;
